@@ -16,18 +16,18 @@
 </head>
 
 <body>
-    <div data-ng-app="Lab4App" data-ng-cloak data-ng-controller="issuesCtrl" class="container" style="margin-top: 2em;">
+    <div data-ng-app="roomsApp" data-ng-cloak data-ng-controller="roomsCtrl" class="container" style="margin-top: 2em;">
 
-        <h1>Ärenden</h1> 
+        <h1>Björnbackas rum</h1> 
 
-        <h2 style="margin-top: 1em;">Befintliga ärenden</h2>
+        <h2 style="margin-top: 1em;">Befintliga rum</h2>
         <div class='filter'>
             <form>
                 <label>Filtrera på sökning:&nbsp;
                     <input type="text" data-ng-model="filterQuery" class="form-control pull-right" placeholder="Filter...">
                 </label>
 
-                <a data-ng-model="date" data-ng-repeat="issues in issuescope | filter:filterDate | orderBy: 'created'"></a>
+                <a data-ng-model="date" data-ng-repeat="rooms in roomscope | filter:filterDate | orderBy: 'created'"></a>
 
             </form>  
 
@@ -39,9 +39,11 @@
             <!-- Lägga till nytt ärende. Hur? Vet hur man gör från ARC -->
 
             <form name="form">
-                <p>Lägg till nytt ärende:</p>
+                <p>Lägg till nytt rum:</p>
                 <input type="text" data-ng-required="true" name="description" data-ng-model="description" />
-                <button data-ng-click="addIssue(description)">Lägg till ärende</button>
+                <p>Fyll i rummets koordinater:</p>
+                <input type="text" name="coordinates" data-ng-model="coordinates" />
+                <button data-ng-click="addRoom(description, coordinates)">Lägg till rum</button>
 
             </form>
             <p>{{msg}}</p>
@@ -54,10 +56,10 @@
                 <thead>
                     <tr>
                         <td data-ng-click="orderByMe('status'); toggleOrder()">
-                            <a>Status</a>
+                            <a>Bokat</a>
                         </td>
                         <td data-ng-click="orderByMe('description'); toggleOrder()">
-                            <a>Ärende</a>
+                            <a>Beskrivning</a>
                         </td>
                         <td data-ng-click="orderByMe('created'); toggleOrder()">
                             <a>Datum</a>
@@ -65,25 +67,29 @@
                         <td data-ng-click="orderByMe('_id'); toggleOrder()">
                             <a>Id</a>
                         </td>
+                        <td data-ng-click="orderByMe('coordinates'); toggleOrder()">
+                            <a>Koordinater</a>
+                        </td>
                         <td></td>
                     </tr>
 
                 </thead>
-                <tr data-ng-repeat="issues in issuescope | filter:filterQuery | orderBy:myOrderBy:orderVariable">
+                <tr data-ng-repeat="rooms in roomscope | filter:filterQuery | orderBy:myOrderBy:orderVariable">
 
                     <td>
-                        <input type="checkbox" data-ng-click="checkIssue(issues._id, issues.status)" data-ng-model="issues.status">
+                        <input type="checkbox" data-ng-click="bookRoom(rooms._id, rooms.status)" data-ng-model="rooms.status">
                     </td>
 
-                    <td>{{ issues.description }}</td>
-                    <td>{{ issues.created }}</td>
-                    <td>{{ issues._id }}</td>
+                    <td>{{ rooms.description }}</td>
+                    <td>{{ rooms.created }}</td>
+                    <td>{{ rooms._id }}</td>
+                    <td>{{ rooms.coordinates }}</td>
                     <td>
-                        <button data-ng-click="remove(issues._id)">Radera</button>
+                        <button data-ng-click="remove(rooms._id)">Radera</button>
                     </td>
                 </tr>
             </table>
-            <p>Antal ärenden: {{issuescope.length}}</p>
+            <p>Antal rum: {{roomscope.length}}</p>
         </div>
 
 
@@ -96,7 +102,7 @@
 
     <!-- Controller -->
    
-    <script src="js/controllers/issueController.js"></script>
+    <script src="js/controllers/roomsController.js"></script>
    
 
 </body>

@@ -6,13 +6,13 @@ var mongoose        = require("mongoose");
 
 
 // Connec to MongoDB database
-// mongoose.connect("mongodb://localhost/issues", {useMongoClient: true});
-var connection = mongoose.connect("mongodb://sakl:password@ds131137.mlab.com:31137/issues", {useMongoClient: true});
+mongoose.connect("mongodb://localhost/rooms", {useMongoClient: true});
+//var connection = mongoose.connect("mongodb://sakl:password@ds131137.mlab.com:31137/rooms", {useMongoClient: true});
 
 mongoose.Promise = global.Promise;
 
 //Import schema
-var Issues = require("./models/issues"); 
+var Rooms = require("./models/rooms"); 
 
 // Create instance of express
 var app = express();  
@@ -25,7 +25,7 @@ app.all('/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
-    next(); 
+    next();  
 });
 
 // Body parser
@@ -46,54 +46,55 @@ app.listen(port, function () {
 });
 
 
-// REST-api for Issues ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// REST-api for rooms ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Send all issues from databse ///////////////////////////////
-app.get("/api/issues", function (req, res) {
-    Issues.find(function(err, Issues){
+// Send all rooms from databse ///////////////////////////////
+app.get("/api/rooms", function (req, res) {
+    Rooms.find(function(err, rooms){
         if (err) {
             res.json(err);
         } else { 
-            res.json(Issues);
+            res.json(rooms);
                }
     })
     
 });
 
-// Read specifik issue by id ///////////////////////////////// not implemented in frontend 
-app.get("/api/issues/:id", function (req, res) {
-    Issues.findById(req.params.id, function(err, Issues){
+// Read specifik room by id ///////////////////////////////// not implemented in frontend 
+app.get("/api/rooms/:id", function (req, res) {
+    Rooms.findById(req.params.id, function(err, rooms){
         if(err) {
             res.json(err);
         } else {
-            res.json(Issues);
+            res.json(rooms);
         }
     });
 });
 
 
-// Add issue to database /////////////////////////////////////
-app.post("/api/issues/add", function (req, res) {
+// Add room to database /////////////////////////////////////
+app.post("/api/rooms/add", function (req, res) {
 
-    var issue = new Issues();
-    issue.description = req.body.description;
+    var room = new Rooms();
+    room.description = req.body.description;
+    room.coordinates = req.body.coordinates;
 
-    issue.save(function(err){
+    room.save(function(err){
         if(err) {
             res.json(err);
         } else {
-            res.json({ message: "Ärende lagrat!"})
+            res.json({ message: "Rum lagrat!"})
         }
     });
 });
 
 
-// Edit issue by id ///////////////////////////////////////////
-app.put('/api/issues/edit/:id', function (req, res) {  
+// Book room by id ///////////////////////////////////////////
+app.put('/api/rooms/book/:id', function (req, res) {  
 var conditions = { _id: req.params.id,
  };
 
-Issues.update(conditions, req.body)
+Rooms.update(conditions, req.body)
 .then(doc =>{
 if(!doc) { return res.status(404).end(); }
 return res.status(200).json(doc);
@@ -102,13 +103,13 @@ return res.status(200).json(doc);
 });
 
 
-// Delete issue by id //////////////////////////////////////
-app.delete("/api/issues/delete/:id", function (req, res) {
-    Issues.remove({_id: req.params.id}, function(err){
+// Delete room by id //////////////////////////////////////
+app.delete("/api/rooms/delete/:id", function (req, res) {
+    Rooms.remove({_id: req.params.id}, function(err){
         if(err) {
             res.json(err);
         } else {
-            res.json ({ message: "Ärende raderat" })
+            res.json ({ message: "Rum raderat" })
         }
     })
 });
